@@ -1,7 +1,8 @@
 --[[
 
-	Universal Extra-Sensory Perception (ESP) Module by Exunys © CC0 1.0 Universal (2023 - 2024)
-
+	Universal Extra-Sensory Perception (ESP) Module by Exunys Â© CC0 1.0 Universal (2023 - 2024)
+	Modified Version - ConfigLibrary Removed
+	
 	https://github.com/Exunys
 
 	- ESP						  > [Players, NPCs & Parts]
@@ -30,14 +31,12 @@ end
 --// Custom Drawing Library
 
 if not Drawing or not Drawing.new or not Drawing.Fonts then
-	loadstring(game.HttpGet(game, "https://pastebin.com/raw/huyiRsK0"))()
+	loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/kyyotoo/UlyCheat---Sniper-Duels/refs/heads/main/src/esp/Drawing.lua"))()
 
 	repeat
 		wait(0)
 	until Drawing and Drawing.new and type(Drawing.new) == "function" and Drawing.Fonts and type(Drawing.Fonts) == "table"
 end
-
-local ConfigLibrary = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/Exunys/Config-Library/main/Main.lua"))()
 
 local Vector2new, Vector3zero, CFramenew = Vector2.new, Vector3.zero, CFrame.new
 local Drawingnew, DrawingFonts = Drawing.new, Drawing.Fonts
@@ -67,7 +66,7 @@ end, function(self, Index, Value)
 end
 
 if identifyexecutor() == "Solara" then -- Quads are broken on Solara.
-	local DrawQuad = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/Exunys/Custom-Quad-Render-Object/main/Main.lua"))() -- Custom Quad Drawing Object
+	local DrawQuad = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/kyyotoo/UlyCheat---Sniper-Duels/refs/heads/main/src/esp/utils.lua"))() -- Custom Quad Drawing Object
 	local _Drawingnew = clonefunction(Drawing.new)
 
 	Drawingnew = function(...)
@@ -126,75 +125,11 @@ end
 
 local Connect, Disconnect = __index(game, "DescendantAdded").Connect
 
---[=[
-local Degrade = (function()
-	if getrawmetatable and getupvalue then
-		if not select(2, pcall(getrawmetatable(game).__index, Players, "LocalPlayer")) then
-			local TemporaryDrawing = Drawingnew("Line")
-
-			if TemporaryDrawing--[[._OBJECT]] then
-				local __index_render = getupvalue(getmetatable(TemporaryDrawing).__index, 4)
-
-				if __index_render and __index_render(TemporaryDrawing, "Thickness") == 1 then
-					return false -- No degrading, meaning the exploit fully supports the optimizations for the module.
-				end
-			end
-		end
-	end
-
-	return true
-end)()
-
 do
 	local TemporaryConnection = Connect(__index(game, "DescendantAdded"), function() end)
 	Disconnect = TemporaryConnection.Disconnect
 	Disconnect(TemporaryConnection)
 end
-
-if not Degrade then
-	local TemporaryDrawing = Drawingnew("Line")
-	getrenderproperty = getupvalue(getmetatable(TemporaryDrawing).__index, 4)
-	setrenderproperty = getupvalue(getmetatable(TemporaryDrawing).__newindex, 4)
-	TemporaryDrawing.Remove(TemporaryDrawing)
-else
-	local DrawQuad = loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/Exunys/Custom-Quad-Render-Object/main/Main.lua"))() -- Custom Quad Drawing Object
-	local _Drawingnew = clonefunction(Drawing.new)
-
-	local TemporaryDrawing = Drawingnew("Line")
-	local Executor = identifyexecutor()
-	local SupportsObject, RenderObjectMetatable = (stringfind(Executor, "Wave") or stringfind(Executor, "Synapse Z")) or TemporaryDrawing--[[._OBJECT]]
-
-	TemporaryDrawing.Remove(TemporaryDrawing)
-
-	Drawingnew = SupportsObject and _Drawingnew or function(...)
-		return ({...})[1] == "Quad" and DrawQuad(...) or setmetatable({
-			__OBJECT_EXISTS = true,
-			__OBJECT = _Drawingnew(...),
-
-			Remove = function(self)
-				self--[[._OBJECT]].Remove(self)
-			end
-		}, {
-			__index = function(self, Index)
-				return self[Index]
-			end,
-
-			__newindex = function(self, Index, Value)
-				self[Index] = Value
-			end
-		})
-	end
-
-	TemporaryDrawing = Drawingnew("Line")
-	RenderObjectMetatable = getmetatable(TemporaryDrawing)
-
-	getrenderproperty, setrenderproperty = RenderObjectMetatable.__index, RenderObjectMetatable.__newindex -- Must use the "__OBJECT" element for either of these functions otherwise you get a stack overflow.
-
-	TemporaryDrawing.Remove(TemporaryDrawing)
-
-	warn("EXUNYS_ESP > Your exploit does not support this module's optimizations! The visuals might be laggy and decrease performance.")
-end
-]=]
 
 --// Variables
 
@@ -222,7 +157,6 @@ end
 
 getgenv().ExunysDeveloperESP = {
 	DeveloperSettings = {
-		Path = "Exunys Developer/Exunys ESP/Configuration.cfg",
 		UnwrapOnCharacterAbsence = false,
 		UpdateMode = "RenderStepped",
 		TeamCheckOption = "TeamColor",
@@ -235,9 +169,9 @@ getgenv().ExunysDeveloperESP = {
 		PartsOnly = false,
 		TeamCheck = false,
 		AliveCheck = true,
-		LoadConfigOnLaunch = true,
 		EnableTeamColors = false,
-		TeamColor = Color3fromRGB(170, 170, 255)
+		TeamColor = Color3fromRGB(170, 170, 255),
+		EntityESP = true -- Pour les NPCs
 	},
 
 	Properties = {
@@ -882,12 +816,12 @@ local CreatingFunctions = {
 		local Settings = Environment.Properties.ESP
 
 		local TopText = Drawingnew("Text")
-		local TopTextObject = TopText--[[._OBJECT]]
+		local TopTextObject = TopText
 
 		setrenderproperty(TopTextObject, "Center", true)
 
 		local BottomText = Drawingnew("Text")
-		local BottomTextObject = BottomText--[[._OBJECT]]
+		local BottomTextObject = BottomText
 
 		setrenderproperty(BottomTextObject, "Center", true)
 
@@ -925,10 +859,10 @@ local CreatingFunctions = {
 		local Settings = Environment.Properties.Tracer
 
 		local TracerOutline = Drawingnew("Line")
-		local TracerOutlineObject = TracerOutline--[[._OBJECT]]
+		local TracerOutlineObject = TracerOutline
 
 		local Tracer = Drawingnew("Line")
-		local TracerObject = Tracer--[[._OBJECT]]
+		local TracerObject = Tracer
 
 		Entry.Visuals.Tracer[1] = Tracer
 		Entry.Visuals.Tracer[2] = TracerOutline
@@ -970,10 +904,10 @@ local CreatingFunctions = {
 		local Settings = Environment.Properties.HeadDot
 		
 		local CircleOutline = Drawingnew("Circle")
-		local CircleOutlineObject = CircleOutline--[[._OBJECT]]
+		local CircleOutlineObject = CircleOutline
 
 		local Circle = Drawingnew("Circle")
-		local CircleObject = Circle--[[._OBJECT]]
+		local CircleObject = Circle
 
 		Entry.Visuals.HeadDot[1] = Circle
 		Entry.Visuals.HeadDot[2] = CircleOutline
@@ -1009,10 +943,10 @@ local CreatingFunctions = {
 		local Settings = Environment.Properties.Box
 
 		local BoxOutline = Drawingnew("Square")
-		local BoxOutlineObject = BoxOutline--[[._OBJECT]]
+		local BoxOutlineObject = BoxOutline
 
 		local Box = Drawingnew("Square")
-		local BoxObject = Box--[[._OBJECT]]
+		local BoxObject = Box
 
 		Entry.Visuals.Box[1] = Box
 		Entry.Visuals.Box[2] = BoxOutline
@@ -1054,10 +988,10 @@ local CreatingFunctions = {
 		local Settings = Environment.Properties.HealthBar
 
 		local Outline = Drawingnew("Line")
-		local OutlineObject = Outline--[[._OBJECT]]
+		local OutlineObject = Outline
 
 		local Main = Drawingnew("Line")
-		local MainObject = Main--[[._OBJECT]]
+		local MainObject = Main
 
 		Entry.Visuals.HealthBar[1] = Main
 		Entry.Visuals.HealthBar[2] = Outline
@@ -1194,8 +1128,8 @@ local CreatingFunctions = {
 		local RenderObjects = {}
 
 		for Index, Value in next, CrosshairParts do
-			setrenderproperty(Value--[[._OBJECT]], "Visible", false) -- For some exploits, the parts are visible at the top left corner of the screen (when the crosshair is disabled upon execution).
-			RenderObjects[Index] = Value--[[._OBJECT]]
+			setrenderproperty(Value, "Visible", false)
+			RenderObjects[Index] = Value
 		end
 
 		local Axis, Rotation, GapSize = GetMouseLocation(), Settings.Rotation, Settings.GapSize
@@ -1451,8 +1385,8 @@ local UtilityFunctions = {
 				Part = IsAPlayer and (Part and (__index(Part, "PrimaryPart") or FindFirstChild(Part, "HumanoidRootPart"))) or Player
 
 				Entry.RigType = Humanoid and FindFirstChild(__index(Part, "Parent"), "Torso") and "R6" or "R15"
-				Entry.RigType = Entry.RigType == "N/A" and Humanoid and (__index(Humanoid, "RigType") == 0 and "R6" or "R15") or "N/A" -- Deprecated method (might be faulty sometimes)
-				Entry.RigType = Entry.RigType == "N/A" and Humanoid and (__index(Humanoid, "RigType") == Enum.HumanoidRigType.R6 and "R6" or "R15") or "N/A" -- Secondary check
+				Entry.RigType = Entry.RigType == "N/A" and Humanoid and (__index(Humanoid, "RigType") == 0 and "R6" or "R15") or "N/A"
+				Entry.RigType = Entry.RigType == "N/A" and Humanoid and (__index(Humanoid, "RigType") == Enum.HumanoidRigType.R6 and "R6" or "R15") or "N/A"
 			end
 		end)
 	end,
@@ -1524,7 +1458,7 @@ local UtilityFunctions = {
 			if not pcall(function()
 				return __index(Entry.Object, "Position"), __index(Entry.Object, "CFrame")
 			end) then
-				warn("EXUNYS_ESP > UtilityFunctions.WrapObject - Attempted to wrap object of an unsupported class type: \""..(__index(Entry.Object, "ClassName") or "N / A").."\"")
+				warn("EXUNYS_ESP > UtilityFunctions.WrapObject - Attempted to wrap object of an unsupported class type: \""..__index(Entry.Object, "ClassName").."\"")
 				return self.UnwrapObject(Entry.Hash)
 			end
 
@@ -1577,7 +1511,7 @@ local UtilityFunctions = {
 				end
 
 				Recursive(Value.Visuals, function(_, _Value)
-					if type(_Value) == "table" and _Value--[[._OBJECT]] then
+					if type(_Value) == "table" and _Value then
 						pcall(_Value.Remove, _Value)
 					end
 				end)
@@ -1662,17 +1596,9 @@ setmetatable(Environment, {
 	end
 })
 
-pcall(spawn, function()
-	if Environment.Settings.LoadConfigOnLaunch then
-		repeat wait(0) until Environment.LoadConfiguration
-
-		Environment:LoadConfiguration()
-	end
-end)
-
 --// Interactive User Functions
 
-Environment.UnwrapPlayers = function() -- (<void>) => <boolean> Success Status
+Environment.UnwrapPlayers = function()
 	local UtilityAssets = Environment.UtilityAssets
 
 	local WrappedObjects = UtilityAssets.WrappedObjects
@@ -1689,7 +1615,7 @@ Environment.UnwrapPlayers = function() -- (<void>) => <boolean> Success Status
 	return #WrappedObjects == 0
 end
 
-Environment.UnwrapAll = function(self) -- METHOD | (<void>) => <void>
+Environment.UnwrapAll = function(self)
 	assert(self, "EXUNYS_ESP.UnwrapAll: Missing parameter #1 \"self\" <table>.")
 
 	if self.UnwrapPlayers() and CrosshairParts.LeftLine then
@@ -1699,7 +1625,7 @@ Environment.UnwrapAll = function(self) -- METHOD | (<void>) => <void>
 	return #self.UtilityAssets.WrappedObjects == 0 and not CrosshairParts.LeftLine
 end
 
-Environment.Restart = function(self) -- METHOD | (<void>) => <void>
+Environment.Restart = function(self)
 	assert(self, "EXUNYS_ESP.Restart: Missing parameter #1 \"self\" <table>.")
 
 	local Objects = {}
@@ -1722,7 +1648,7 @@ Environment.Restart = function(self) -- METHOD | (<void>) => <void>
 	end
 end
 
-Environment.Exit = function(self) -- METHOD | (<void>) => <void>
+Environment.Exit = function(self)
 	assert(self, "EXUNYS_ESP.Exit: Missing parameter #1 \"self\" <table>.")
 
 	if self:UnwrapAll() then
@@ -1756,15 +1682,15 @@ Environment.Exit = function(self) -- METHOD | (<void>) => <void>
 	end
 end
 
-Environment.WrapObject = function(...) -- (<Instance> Object[, <string> Pseudo Name, <table> Allowed Visuals, <uint> Render Distance]) => <string> Hash
+Environment.WrapObject = function(...)
 	return UtilityFunctions:WrapObject(...)
 end
 
-Environment.UnwrapObject = UtilityFunctions.UnwrapObject -- (<Instance/string> Object/Hash[, <string> Hash]) => <void>
+Environment.UnwrapObject = UtilityFunctions.UnwrapObject
 
-Environment.RenderCrosshair = CreatingFunctions.Crosshair -- (<void>) => <void>
+Environment.RenderCrosshair = CreatingFunctions.Crosshair
 
-Environment.RemoveCrosshair = function() -- (<void>) => <void>
+Environment.RemoveCrosshair = function()
 	if not CrosshairParts.LeftLine then
 		return
 	end
@@ -1781,11 +1707,11 @@ Environment.RemoveCrosshair = function() -- (<void>) => <void>
 	CrosshairParts = {}
 end
 
-Environment.WrapPlayers = LoadESP -- (<void>) => <void>
+Environment.WrapPlayers = LoadESP
 
-Environment.GetEntry = UtilityFunctions.GetObjectEntry -- (<Instance> Object[, <string> Hash]) => <table> Entry
+Environment.GetEntry = UtilityFunctions.GetObjectEntry
 
-Environment.Load = function() -- (<void>) => <void>
+Environment.Load = function()
 	if Loaded then
 		return
 	end
@@ -1793,7 +1719,7 @@ Environment.Load = function() -- (<void>) => <void>
 	LoadESP(); CreatingFunctions.Crosshair(); Loaded = true
 end
 
-Environment.UpdateConfiguration = function(DeveloperSettings, Settings, Properties) -- (<table> DeveloperSettings, <table> Settings, <table> Properties) => <table> New Environment
+Environment.UpdateConfiguration = function(DeveloperSettings, Settings, Properties)
 	assert(DeveloperSettings, "EXUNYS_ESP.UpdateConfiguration: Missing parameter #1 \"DeveloperSettings\" <table>.")
 	assert(Settings, "EXUNYS_ESP.UpdateConfiguration: Missing parameter #2 \"Settings\" <table>.")
 	assert(Properties, "EXUNYS_ESP.UpdateConfiguration: Missing parameter #3 \"Properties\" <table>.")
@@ -1807,34 +1733,23 @@ Environment.UpdateConfiguration = function(DeveloperSettings, Settings, Properti
 	return Environment
 end
 
-Environment.LoadConfiguration = function(self) -- METHOD | (<void>) => <void>
+-- Simplified configuration functions (removed ConfigLibrary dependency)
+Environment.LoadConfiguration = function(self)
 	assert(self, "EXUNYS_ESP.LoadConfiguration: Missing parameter #1 \"self\" <table>.")
-
-	local Path = self.DeveloperSettings.Path
-
-	if self:UnwrapAll() then
-		pcall(function()
-			local Configuration, Data = ConfigLibrary:LoadConfig(Path), {}
-
-			for _, Index in next, {"DeveloperSettings", "Settings", "Properties"} do
-				Data[#Data + 1] = ConfigLibrary:CloneTable(Configuration[Index])
-			end
-
-			self.UpdateConfiguration(unpack(Data))()
-		end)
-	end
+	
+	warn("EXUNYS_ESP: LoadConfiguration - ConfigLibrary removed. Use UpdateConfiguration() to modify settings.")
+	
+	return Environment
 end
 
-Environment.SaveConfiguration = function(self) -- METHOD | (<void>) => <void>
+Environment.SaveConfiguration = function(self)
 	assert(self, "EXUNYS_ESP.SaveConfiguration: Missing parameter #1 \"self\" <table>.")
-
-	local DeveloperSettings = self.DeveloperSettings
-
-	ConfigLibrary:SaveConfig(DeveloperSettings.Path, {
-		DeveloperSettings = DeveloperSettings,
-		Settings = self.Settings,
-		Properties = self.Properties
-	})
+	
+	warn("EXUNYS_ESP: SaveConfiguration - ConfigLibrary removed. Settings are in-memory only.")
+	
+	
+	return true
 end
+
 
 return Environment
